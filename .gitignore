@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store
+fake_urldata.csv
+
+# Not: models/*.pkl BİLEREK repoya dahil ediliyor —
+# Streamlit Community Cloud deploy'u model dosyasına ihtiyaç duyuyor.
+# Eğer ileride büyük dosyalar (>100MB) eklersen, Git LFS kullanmayı düşün.

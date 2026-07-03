@@ -1,0 +1,67 @@
+{
+  "feature_names": [
+    "url_length",
+    "hostname_length",
+    "path_length",
+    "count_dot",
+    "count_hyphen",
+    "count_slash",
+    "count_at",
+    "count_question",
+    "count_equal",
+    "count_percent",
+    "count_digit",
+    "has_ip",
+    "has_https",
+    "has_www",
+    "has_at_symbol",
+    "has_double_slash",
+    "subdomain_count",
+    "hostname_entropy",
+    "digit_ratio_hostname",
+    "suspicious_tld"
+  ],
+  "class_ratio_benign_over_malicious": 3.3104617093395126,
+  "cross_validation": {
+    "LogisticRegression": {
+      "mean_auc": 0.9979109822974672,
+      "std_auc": 0.0002359673657754775
+    },
+    "RandomForest": {
+      "mean_auc": 0.9984173526357771,
+      "std_auc": 0.0001528718897122421
+    },
+    "XGBoost": {
+      "mean_auc": 0.998880951285218,
+      "std_auc": 0.0001296014544675864
+    }
+  },
+  "hyperparameter_tuning": {
+    "best_params": {
+      "subsample": 0.9,
+      "n_estimators": 300,
+      "min_child_weight": 5,
+      "max_depth": 8,
+      "learning_rate": 0.05,
+      "colsample_bytree": 0.7
+    },
+    "best_cv_auc": 0.9990409662987038
+  },
+  "test_evaluation": {
+    "roc_auc": 0.9991986390123376,
+    "confusion_matrix": {
+      "tn": 69035,
+      "fp": 113,
+      "fn": 129,
+      "tp": 20759
+    }
+  },
+  "domain_leakage_check": {
+    "method": "StratifiedGroupKFold",
+    "unique_hostnames": 166989,
+    "random_split_auc": 0.998880951285218,
+    "group_split_auc": 0.9983885802009127,
+    "group_split_std": 0.00019020745086294427,
+    "difference": 0.0004923710843053319
+  }
+}
