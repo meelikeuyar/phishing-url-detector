@@ -56,12 +56,12 @@
     "difference": 0.000436931532067919
   },
   "test_evaluation": {
-    "roc_auc": 0.9992569567449805,
+    "roc_auc": 0.9586853973117504,
     "confusion_matrix": {
-      "tn": 69032,
-      "fp": 116,
-      "fn": 125,
-      "tp": 20763
+      "tn": 61726,
+      "fp": 7422,
+      "fn": 2316,
+      "tp": 18572
     }
   },
   "shortcut_removal_experiment": {
