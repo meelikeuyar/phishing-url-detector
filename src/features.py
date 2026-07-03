@@ -73,8 +73,16 @@ def extract_features(url: str) -> dict:
     flag olarak korunuyor, böylece model ona istismar değil gerçek ağırlığı
     kadar erişebiliyor."""
     url = str(url)
+    # Model, eğitim verisinde HER ZAMAN şemalı (http:// ya da https://) URL gördü.
+    # Kullanıcı canlıda şemasız yazarsa (ör. 'github.com') bu, modelin hiç görmediği
+    # bir girdi dağılımına düşüp tutarsız tahminlere yol açıyordu (test: 'github.com'
+    # %82 malicious çıkarken 'https://github.com' %14 benign çıkıyordu - aynı site).
+    # Çözüm: şema eksikse https:// varsay (tarayıcıların da yaptığı standart davranış).
+    # Bu, zaten şemalı URL'lerin davranışını DEĞİŞTİRMEZ, sadece belirsiz girdiyi
+    # modelin eğitildiği dağılıma yaklaştırır — retrain gerektirmez.
+    url_for_counts = url if "://" in url else f"https://{url}"
     try:
-        parsed = urlparse(url if "://" in url else f"http://{url}")
+        parsed = urlparse(url_for_counts)
         hostname = parsed.hostname or ""
         path = parsed.path or ""
     except Exception:
@@ -82,7 +90,7 @@ def extract_features(url: str) -> dict:
 
     has_www_flag = 1 if hostname.startswith("www.") else 0
     norm_hostname = hostname[4:] if has_www_flag else hostname
-    norm_url = url.replace(hostname, norm_hostname, 1) if hostname else url
+    norm_url = url_for_counts.replace(hostname, norm_hostname, 1) if hostname else url_for_counts
 
     hostname_digits = sum(c.isdigit() for c in norm_hostname)
     tld = norm_hostname.rsplit(".", 1)[-1].lower() if "." in norm_hostname else ""
@@ -102,8 +110,8 @@ def extract_features(url: str) -> dict:
         "has_ip": 1 if re.search(r"\d+\.\d+\.\d+\.\d+", url) else 0,
         "has_https": 1 if url.startswith("https") else 0,
         "has_www": has_www_flag,
-        "has_at_symbol": 1 if "@" in url else 0,
-        "has_double_slash": 1 if "//" in url[7:] else 0,
+        "has_at_symbol": 1 if "@" in url_for_counts else 0,
+        "has_double_slash": 1 if "//" in path else 0,
         "subdomain_count": len(norm_hostname.split(".")) - 2 if norm_hostname.count(".") >= 2 else 0,
         "hostname_entropy": round(_shannon_entropy(norm_hostname), 4),
         "digit_ratio_hostname": round(hostname_digits / len(norm_hostname), 4) if norm_hostname else 0.0,
