@@ -1,5 +1,5 @@
  Phishing URL Detector
- Canlı demo: [buraya deploy sonrası link gelecek]
+ Canlı demo: phishing-url-detector-cutsfretd7lgocwsvv7yvf.streamlit.app
 Bir URL'nin sadece metinsel (lexical) özelliklerine bakarak phishing/malicious
 olup olmadığını tahmin eden bir makine öğrenmesi projesi. Kaggle'daki
 Malicious and Benign URLs
