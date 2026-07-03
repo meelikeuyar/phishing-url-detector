@@ -59,7 +59,19 @@ def _shannon_entropy(s: str) -> float:
 
 
 def extract_features(url: str) -> dict:
-    """Tek bir URL'den özellik sözlüğü çıkarır."""
+    """Tek bir URL'den özellik sözlüğü çıkarır.
+
+    NOT: 'www.' öneki, hesaplamalardan önce normalize ediliyor. Sebebi: www.
+    varlığı; url_length, hostname_length, count_dot, subdomain_count gibi
+    feature'lara da otomatik olarak sızıyor (çünkü 'www.' eklemek 4 karakter +
+    1 nokta + 1 subdomain seviyesi demek). Bu sızıntı yüzünden model, has_www
+    feature'ını çıkarsak bile aynı bilgiyi diğer feature'lardan dolaylı olarak
+    yeniden inşa edebiliyordu (test: has_www/has_https çıkarıldıktan sonra bile
+    google.com / www.google.com skorları arasında ~90 puanlık fark kalıyordu).
+    Çözüm: uzunluk/sayma bazlı tüm feature'lar normalize edilmiş (www. hariç)
+    hostname/URL üzerinden hesaplanıyor; has_www bilgisi ise TEK ve temiz bir
+    flag olarak korunuyor, böylece model ona istismar değil gerçek ağırlığı
+    kadar erişebiliyor."""
     url = str(url)
     try:
         parsed = urlparse(url if "://" in url else f"http://{url}")
@@ -68,29 +80,33 @@ def extract_features(url: str) -> dict:
     except Exception:
         hostname, path = "", ""
 
-    hostname_digits = sum(c.isdigit() for c in hostname)
-    tld = hostname.rsplit(".", 1)[-1].lower() if "." in hostname else ""
+    has_www_flag = 1 if hostname.startswith("www.") else 0
+    norm_hostname = hostname[4:] if has_www_flag else hostname
+    norm_url = url.replace(hostname, norm_hostname, 1) if hostname else url
+
+    hostname_digits = sum(c.isdigit() for c in norm_hostname)
+    tld = norm_hostname.rsplit(".", 1)[-1].lower() if "." in norm_hostname else ""
 
     return {
-        "url_length": len(url),
-        "hostname_length": len(hostname),
+        "url_length": len(norm_url),
+        "hostname_length": len(norm_hostname),
         "path_length": len(path),
-        "count_dot": url.count("."),
-        "count_hyphen": url.count("-"),
-        "count_slash": url.count("/"),
-        "count_at": url.count("@"),
-        "count_question": url.count("?"),
-        "count_equal": url.count("="),
-        "count_percent": url.count("%"),
-        "count_digit": sum(c.isdigit() for c in url),
+        "count_dot": norm_url.count("."),
+        "count_hyphen": norm_url.count("-"),
+        "count_slash": norm_url.count("/"),
+        "count_at": norm_url.count("@"),
+        "count_question": norm_url.count("?"),
+        "count_equal": norm_url.count("="),
+        "count_percent": norm_url.count("%"),
+        "count_digit": sum(c.isdigit() for c in norm_url),
         "has_ip": 1 if re.search(r"\d+\.\d+\.\d+\.\d+", url) else 0,
         "has_https": 1 if url.startswith("https") else 0,
-        "has_www": 1 if "www." in url else 0,
+        "has_www": has_www_flag,
         "has_at_symbol": 1 if "@" in url else 0,
         "has_double_slash": 1 if "//" in url[7:] else 0,
-        "subdomain_count": len(hostname.split(".")) - 2 if hostname.count(".") >= 2 else 0,
-        "hostname_entropy": round(_shannon_entropy(hostname), 4),
-        "digit_ratio_hostname": round(hostname_digits / len(hostname), 4) if hostname else 0.0,
+        "subdomain_count": len(norm_hostname.split(".")) - 2 if norm_hostname.count(".") >= 2 else 0,
+        "hostname_entropy": round(_shannon_entropy(norm_hostname), 4),
+        "digit_ratio_hostname": round(hostname_digits / len(norm_hostname), 4) if norm_hostname else 0.0,
         "suspicious_tld": 1 if tld in SUSPICIOUS_TLDS else 0,
     }
 

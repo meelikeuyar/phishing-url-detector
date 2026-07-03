@@ -24,16 +24,16 @@
   "class_ratio_benign_over_malicious": 3.3104617093395126,
   "cross_validation": {
     "LogisticRegression": {
-      "mean_auc": 0.9979109822974672,
-      "std_auc": 0.0002359673657754775
+      "mean_auc": 0.9979052918970928,
+      "std_auc": 0.00022848453593168213
     },
     "RandomForest": {
-      "mean_auc": 0.9984173526357771,
-      "std_auc": 0.0001528718897122421
+      "mean_auc": 0.9984223760909368,
+      "std_auc": 0.00014429090515748885
     },
     "XGBoost": {
-      "mean_auc": 0.998880951285218,
-      "std_auc": 0.0001296014544675864
+      "mean_auc": 0.9989233406570733,
+      "std_auc": 0.00014638736120124702
     }
   },
   "hyperparameter_tuning": {
@@ -45,23 +45,36 @@
       "learning_rate": 0.05,
       "colsample_bytree": 0.7
     },
-    "best_cv_auc": 0.9990409662987038
-  },
-  "test_evaluation": {
-    "roc_auc": 0.9991986390123376,
-    "confusion_matrix": {
-      "tn": 69035,
-      "fp": 113,
-      "fn": 129,
-      "tp": 20759
-    }
+    "best_cv_auc": 0.999048625286878
   },
   "domain_leakage_check": {
     "method": "StratifiedGroupKFold",
     "unique_hostnames": 166989,
-    "random_split_auc": 0.998880951285218,
-    "group_split_auc": 0.9983885802009127,
-    "group_split_std": 0.00019020745086294427,
-    "difference": 0.0004923710843053319
+    "random_split_auc": 0.9989233406570733,
+    "group_split_auc": 0.9984864091250054,
+    "group_split_std": 0.00018159185507928515,
+    "difference": 0.000436931532067919
+  },
+  "test_evaluation": {
+    "roc_auc": 0.9992569567449805,
+    "confusion_matrix": {
+      "tn": 69032,
+      "fp": 116,
+      "fn": 125,
+      "tp": 20763
+    }
+  },
+  "shortcut_removal_experiment": {
+    "excluded_features": [
+      "has_www",
+      "has_https"
+    ],
+    "cv_auc_v1": 0.9989233406570733,
+    "cv_auc_v2": 0.9591479443298827,
+    "test_auc_v1": 0.9992569567449805,
+    "test_auc_v2": 0.9586853973117504,
+    "auc_drop": 0.0405715594332301,
+    "active_model": "v2 (has_www/has_https bilinçli olarak çıkarıldı — fairness tercih edildi)",
+    "decision_rationale": "AUC dususu kabul edildi cunku has_www bu veri setine ozgu yapay bir korelasyondu (gercek dunyada anlamsiz), google.com/www.google.com testiyle dogrulandi."
   }
 }
