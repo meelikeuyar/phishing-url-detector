@@ -1,4 +1,4 @@
-# 🛡️ Phishing URL Detector
+#  Phishing URL Detector
 
 **🔗 Canlı demo: [phishing-url-detector-cutsfretd7lgocwsvv7yvf.streamlit.app](https://phishing-url-detector-cutsfretd7lgocwsvv7yvf.streamlit.app)**
 
@@ -7,7 +7,7 @@ olup olmadığını tahmin eden bir makine öğrenmesi projesi. Kaggle'daki
 [Malicious and Benign URLs](https://www.kaggle.com/datasets/siddharthkumar25/malicious-and-benign-urls)
 veri seti (450K+ URL) üzerinde eğitildi.
 
-> ⚠️ **Sınırlama:** Model yalnızca URL string'ine bakar; WHOIS, SSL sertifikası,
+>  **Sınırlama:** Model yalnızca URL string'ine bakar; WHOIS, SSL sertifikası,
 > DNS kaydı veya sayfa içeriği gibi bilgileri kullanmaz. Bu nedenle tek başına
 > production-grade bir güvenlik kararı için yeterli değildir — bkz. "Bilinen
 > Sınırlamalar" bölümü.
